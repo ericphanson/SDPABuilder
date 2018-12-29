@@ -2,7 +2,7 @@ language: julia
 os:
   - linux
 julia:
-  - 0.6
+  - 1.0
 notifications:
   email: false
 git:
@@ -20,7 +20,7 @@ sudo: required
 # Before anything else, get the latest versions of things
 before_script:
   #- julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryProvider.jl")'
-  - julia -e 'Pkg.clone("https://github.com/JuliaPackaging/BinaryBuilder.jl"); Pkg.build()'
+  - julia -e 'using Pkg; Pkg.clone("https://github.com/JuliaPackaging/BinaryBuilder.jl"); Pkg.build()'
 
 script:
   - julia build_tarballs.jl
@@ -36,5 +36,5 @@ deploy:
     file: products/*
     skip_cleanup: true
     on:
-        repo: juan-pablo-vielma/SDPABuilder
+        repo: JuliaOpt/SDPABuilder
         tags: true
