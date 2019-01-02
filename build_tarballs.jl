@@ -16,7 +16,7 @@ sources = [
 script = raw"""
 cd $WORKSPACE/srcdir
 cd sdpa-7.3.8/
-./configure --prefix=$prefix --host=$target --with-blas="${prefix}/lib/libopenblas.so" --with-lapack="${prefix}/lib/libopenblas.so"
+./configure --prefix=$prefix --host=$target --with-blas="-L${prefix}/lib -lopenblas" --with-lapack="-L${prefix}/lib -lopenblas"
 make
 make install
 
