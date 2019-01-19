@@ -84,19 +84,29 @@ cmake --build . --config Release --target install
 # push!(platforms, Windows(:x86_64,compiler_abi=CompilerABI(:gcc6)))
 
 # platforms are restricted by libcxxwrap-julia
-platforms = Platform[]
-_abis(p) = (:gcc7,:gcc8)
-_archs(p) = (:x86_64, :i686)
-_archs(::Type{Linux}) = (:x86_64,)
-for p in (Linux,Windows)
-    for a in _archs(p)
-        for abi in _abis(p)
-            push!(platforms, p(a, compiler_abi=CompilerABI(abi,:cxx11)))
-        end
-    end
-end
-push!(platforms, MacOS(:x86_64))
+# platforms = Platform[]
+# _abis(p) = (:gcc7,:gcc8)
+# _archs(p) = (:x86_64, :i686)
+# _archs(::Type{Linux}) = (:x86_64,)
+# for p in (Linux,Windows)
+#     for a in _archs(p)
+#         for abi in _abis(p)
+#             push!(platforms, p(a, compiler_abi=CompilerABI(abi,:cxx11)))
+#         end
+#     end
+# end
+# push!(platforms, MacOS(:x86_64))
 
+platforms = Platform[
+    MacOS(:x86_64, compiler_abi=CompilerABI(:gcc7)),
+    MacOS(:x86_64, compiler_abi=CompilerABI(:gcc8)),
+    Windows(:i686, compiler_abi=CompilerABI(:gcc7, :cxx11)),
+    Windows(:i686, compiler_abi=CompilerABI(:gcc8, :cxx11)),
+    Windows(:x86_64, compiler_abi=CompilerABI(:gcc7, :cxx11)),
+    Windows(:x86_64, compiler_abi=CompilerABI(:gcc8, :cxx11)),
+    Linux(:x86_64, compiler_abi=CompilerABI(:gcc7, :cxx11)),
+    Linux(:x86_64, compiler_abi=CompilerABI(:gcc8, :cxx11)),
+]
 
 # The products that we will ensure are always built
 products(prefix) = [
