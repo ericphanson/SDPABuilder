@@ -30,6 +30,8 @@ if [ $target = "x86_64-apple-darwin14" ]; then
   export AR=/opt/x86_64-apple-darwin14/bin/x86_64-apple-darwin14-ar
 fi
 
+## First build SDPA
+
 patch -p1 < $WORKSPACE/srcdir/patches/shared.diff
 mv configure.in configure.ac
 patch -p1 < $WORKSPACE/srcdir/patches/lt_init.diff
@@ -43,37 +45,74 @@ autoreconf -i
 
 make
 make install
+
+## Then build the libcxxwrap-julia wrapper
+
+cd $WORKSPACE/srcdir
+cd sdpawrap
+
+mkdir build
+cd build
+if [[ $target == i686-* ]] || [[ $target == arm-* ]]; then
+    export processor=pentium4
+else
+    export processor=x86-64
+fi
+
+cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain -DSDPA_DIR=$prefix -DMUMPS_INCLUDE_DIR="$prefix/include/coin/ThirdParty" \
+-DCMAKE_FIND_ROOT_PATH=$prefix -DJulia_PREFIX=$prefix  -DSDPA_LIBRARY="-lsdpa" -DCMAKE_CXX_FLAGS="-march=$processor" \
+-D_GLIBCXX_USE_CXX11_ABI=1 ..
+cmake --build . --config Release --target install
+
 """
 
-# These are the platforms we will build for by default, unless further
-# platforms are passed in on the command line
-platforms = [
-    Linux(:i686, libc=:glibc),
-    Linux(:x86_64, libc=:glibc),
-    Linux(:aarch64, libc=:glibc),
-    Linux(:armv7l, libc=:glibc, call_abi=:eabihf),
-    MacOS(:x86_64),
-    Windows(:i686),
-    Windows(:x86_64)
-]
-platforms = expand_gcc_versions(platforms)
-# To fix gcc4 bug in Windows
-# platforms = setdiff(platforms, [Windows(:x86_64, compiler_abi=CompilerABI(:gcc4)), Windows(:i686, compiler_abi=CompilerABI(:gcc4))])
-push!(platforms, Windows(:i686,compiler_abi=CompilerABI(:gcc6)))
-push!(platforms, Windows(:x86_64,compiler_abi=CompilerABI(:gcc6)))
+# # These are the platforms we will build for by default, unless further
+# # platforms are passed in on the command line
+# platforms = [
+#     Linux(:i686, libc=:glibc),
+#     Linux(:x86_64, libc=:glibc),
+#     Linux(:aarch64, libc=:glibc),
+#     Linux(:armv7l, libc=:glibc, call_abi=:eabihf),
+#     MacOS(:x86_64),
+#     Windows(:i686),
+#     Windows(:x86_64)
+# ]
+# platforms = expand_gcc_versions(platforms)
+# # To fix gcc4 bug in Windows
+# # platforms = setdiff(platforms, [Windows(:x86_64, compiler_abi=CompilerABI(:gcc4)), Windows(:i686, compiler_abi=CompilerABI(:gcc4))])
+# push!(platforms, Windows(:i686,compiler_abi=CompilerABI(:gcc6)))
+# push!(platforms, Windows(:x86_64,compiler_abi=CompilerABI(:gcc6)))
+
+# platforms are restricted by libcxxwrap-julia
+platforms = Platform[]
+_abis(p) = (:gcc7,:gcc8)
+_archs(p) = (:x86_64, :i686)
+_archs(::Type{Linux}) = (:x86_64,)
+for p in (Linux,Windows)
+    for a in _archs(p)
+        for abi in _abis(p)
+            push!(platforms, p(a, compiler_abi=CompilerABI(abi,:cxx11)))
+        end
+    end
+end
+push!(platforms, MacOS(:x86_64))
+
 
 # The products that we will ensure are always built
 products(prefix) = [
-    ExecutableProduct(prefix, "", :sdpa)
+    ExecutableProduct(prefix, "sdpa", :sdpa),
+    LibraryProduct(prefix, "libsdpa", :libsdpa),
+    LibraryProduct(prefix, "libsdpawrap", :libsdpawrap)
 ]
 
 # Dependencies that must be installed before this package can be built
 dependencies = [
-    "https://github.com/juan-pablo-vielma/COINBLASBuilder/releases/download/v1.4.6-1-static/build_COINBLASBuilder.v1.4.6.jl",
-    "https://github.com/juan-pablo-vielma/COINLapackBuilder/releases/download/v1.5.6-1-static/build_COINLapackBuilder.v1.5.6.jl",
-    "https://github.com/juan-pablo-vielma/COINMetisBuilder/releases/download/v1.3.5-1-static/build_COINMetisBuilder.v1.3.5.jl",
-    "https://github.com/juan-pablo-vielma/COINMumpsBuilder/releases/download/v1.6.0-1-static/build_COINMumpsBuilder.v1.6.0.jl"
-
+    "https://github.com/JuliaOpt/COINBLASBuilder/releases/download/v1.4.6-1-static/build_COINBLASBuilder.v1.4.6.jl",
+    "https://github.com/JuliaOpt/COINLapackBuilder/releases/download/v1.5.6-1-static/build_COINLapackBuilder.v1.5.6.jl",
+    "https://github.com/JuliaOpt/COINMetisBuilder/releases/download/v1.3.5-1-static/build_COINMetisBuilder.v1.3.5.jl",
+    "https://github.com/JuliaOpt/COINMumpsBuilder/releases/download/v1.6.0-1-static/build_COINMumpsBuilder.v1.6.0.jl",
+    "https://github.com/JuliaInterop/libcxxwrap-julia/releases/download/v0.5.1/build_libcxxwrap-julia-1.0.v0.5.1.jl",
+    "https://github.com/JuliaPackaging/JuliaBuilder/releases/download/v1.0.0-2/build_Julia.v1.0.0.jl"
 ]
 
 # Build the tarballs, and possibly a `build.jl` as well.
