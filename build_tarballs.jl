@@ -64,6 +64,9 @@ cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target
 -D_GLIBCXX_USE_CXX11_ABI=1 ..
 cmake --build . --config Release --target install
 
+if [[ $target == *w64-mingw32* ]] ; then
+    cp $WORKSPACE/destdir/lib/libsdpawrap.dll $WORKSPACE/destdir/bin
+fi
 """
 
 # # These are the platforms we will build for by default, unless further
