@@ -32,6 +32,8 @@ fi
 
 ## First build SDPA
 
+mv $WORKSPACE/srcdir/patches/quiet.diff .
+patch -p1 < $WORKSPACE/srcdir/patches/apply_quiet.diff
 patch -p1 < $WORKSPACE/srcdir/patches/shared.diff
 mv configure.in configure.ac
 patch -p1 < $WORKSPACE/srcdir/patches/lt_init.diff
