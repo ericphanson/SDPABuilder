@@ -67,7 +67,7 @@ JLCXX_MODULE define_julia_module(jlcxx::Module& sdpa)
         .method("setParameterBetaStar", &SDPA::setParameterBetaStar)
         .method("setParameterBetaBar", &SDPA::setParameterBetaBar)
         .method("setParameterGammaStar", &SDPA::setParameterGammaStar)
-        .method("setParameterEpsilonDash", &SDPA::setParameterEpsilonDash);
+        .method("setParameterEpsilonDash", &SDPA::setParameterEpsilonDash)
         .method("writeSparseLinearSpace",&SDPA::writeSparseLinearSpace )
         .method("writeInputSparse", &SDPA::writeInputSparse);
 }
