@@ -31,7 +31,7 @@ deploy:
     api_key:
         # Note; this api_key is only valid for juan-pablo-vielma/SDPABuilder; you need
         # to make your own: https://docs.travis-ci.com/user/deployment/releases/
-        secure: o/4ZosUbxP5CWuNgI6AP5KZNGPQyUw4LDP1efRAouXVfGMjsUsUtDqFFK6B9cW+F0XgQId0CinZrPHFKg1HSQ/3EoFYMAGtU+DvDKLACI4+u0rFGrA/D1XtbP6tDJGQAxdWgUk542RFYYf7ixAieVlR+Lh6shMLSF/qS/Mro+7ppWyHuX+UwGiNQwukJ1p/NrDJLEbdaI5/QJtuIcDxi7/UP6GkVnDhpE+FQqbqn1P3G3wclCZKXeBM31NRStEvy9bJDFen+OmPOon585SoTARH0TJ7CG9uuMb29QGVrYFycWL1095JRs5rlxvp/LuHm4jqI8QzvCr2ZPQud81l+M1MGbS+E0AxwSsoje0OGAqucktZYesjCMduAJZVPCEUU2lFb0mNz0RN8+oFz11G0mGGdjiTD/rWb7BVPGLH7ztH8AwoT6qFbSp7Sfr2XLoC+kzkFMHgJfVoA9RAYasCwuIA94ft/tivCYHwPTfpY7VQmJf04j3vVbuUJA2i0catzDfgCL4VlCELCZPJIiyfuNxl+HUy4392+RfZaabAUDWPdetJq3YHf3JUA+/ZshO8GCReChUmZ6Ig3X5eKHpHv3f5SZt6amE1gdc/darame4lwdZF18ApvT+9sih0MAFKznebq+QDlI1gopR862BVXdPHNhQ3mI4PIiysF5NkBn0A=
+        "697e22aee54f4e77ebb9cbaa638651bf102e08d1"
     file_glob: true
     file: products/*
     skip_cleanup: true
