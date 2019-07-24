@@ -36,5 +36,5 @@ deploy:
     file: products/*
     skip_cleanup: true
     on:
-        repo: JuliaOpt/SDPABuilder
+        repo: JiazhengZhu/SDPABuilder
         tags: true
