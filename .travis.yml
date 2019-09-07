@@ -29,12 +29,12 @@ script:
 deploy:
     provider: releases
     api_key:
-        # Note; this api_key is only valid for juan-pablo-vielma/SDPABuilder; you need
+        # Note; this api_key is only valid for ericphanson/SDPABuilder; you need
         # to make your own: https://docs.travis-ci.com/user/deployment/releases/
-        "697e22aee54f4e77ebb9cbaa638651bf102e08d1"
+        secure: "XpPlT90bIu732WloKieno+fNH0+cSO+Wx3ODM7pXWqluWyn52rH7hmPvzTZD7djU4yXbazOXreqXDbzoK3jPkH5l11Vtzvqj4hG8iiOvlS+an/l/0jLHwrS03vEtmY2fz6Ok9MsF6rZg7GHcYEkspiI72x5Z5sE79lzHHXIA05DgAFO38TLmN9Uist9XKNfwt/MTEiTb1+JmZRds0io/D8lzy6K6qSbXQMj1WFExXOpnPUYM9j12RxMCn3Js2S20Ye02SG0ss7KPuVkmeTvj5+7rjhQQWHqVv5qvyOwMB0kxuyDJqstx6FTYHK/F7vFZrYUfpxON8oYxpPzp8LR3ID3WN8vPtasU/2BJOm/lH4T5ZrWWkxWPMnBc6ziL6rnsTYfmc2KmU2bsxJwRO9dCSj5lTzo610b+7p/XJFflO57Fgqqki/7YPL0u3pATYRmxcvDoQKf54LFG8frhuEuk2UpF/JOxEzwN1yoVm3s992n1h68kPaW/iWFktclNaaS1Q+dYrnTrrRsAZS/4eSxR2Hjz0IxG3i1hYa+qOwq200W3ihtxVI7jrANxEIhdbW/PulT7e9JV/ppQXLt0bWi0BYmpxaEvArMPLg25LzIV7SAbU17qK90IYK8C3FYQrprzNcKdLJQmR9M0u075tVUW9VtMwBDh7rXZgpfSI2p+whA="
     file_glob: true
     file: products/*
     skip_cleanup: true
     on:
-        repo: JuliaOpt/SDPABuilder
+        repo: ericphanson/SDPABuilder
         tags: true
