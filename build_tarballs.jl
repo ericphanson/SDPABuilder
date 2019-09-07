@@ -45,46 +45,20 @@ autoreconf -i
 
 make
 make install
-
-## Then build the libcxxwrap-julia wrapper
-
-cd $WORKSPACE/srcdir
-cd sdpawrap
-
-mkdir build
-cd build
-if [[ $target == i686-* ]] || [[ $target == arm-* ]]; then
-    export processor=pentium4
-else
-    export processor=x86-64
-fi
-
-cmake -DCMAKE_INSTALL_PREFIX=$prefix -DCMAKE_TOOLCHAIN_FILE=/opt/$target/$target.toolchain -DSDPA_DIR=$prefix -DMUMPS_INCLUDE_DIR="$prefix/include/coin/ThirdParty" \
--DCMAKE_FIND_ROOT_PATH=$prefix -DJulia_PREFIX=$prefix  -DSDPA_LIBRARY="-lsdpa" -DCMAKE_CXX_FLAGS="-march=$processor" \
--D_GLIBCXX_USE_CXX11_ABI=1 ..
-cmake --build . --config Release --target install
-
-if [[ $target == *w64-mingw32* ]] ; then
-    cp $WORKSPACE/destdir/lib/libsdpawrap.dll $WORKSPACE/destdir/bin
-fi
 """
 
 
-# platforms are restricted by libcxxwrap-julia, which requires gcc7 or gcc8
-# and hence will not work with the official binaries for windows (which uses gcc4)
-
 platforms = Platform[
-    MacOS(:x86_64, compiler_abi=CompilerABI(:gcc7)),
-    MacOS(:x86_64, compiler_abi=CompilerABI(:gcc8)),
-    Linux(:x86_64, compiler_abi=CompilerABI(:gcc7, :cxx11)),
-    Linux(:x86_64, compiler_abi=CompilerABI(:gcc8, :cxx11)),
+    MacOS(:x86_64),
+    Linux(:x86_64),
 ]
+
+platforms = expand_gcc_versions(platforms)
 
 # The products that we will ensure are always built
 products(prefix) = [
     ExecutableProduct(prefix, "sdpa", :sdpa),
     LibraryProduct(prefix, "libsdpa", :libsdpa),
-    LibraryProduct(prefix, "libsdpawrap", :libsdpawrap)
 ]
 
 # Dependencies that must be installed before this package can be built
@@ -93,8 +67,6 @@ dependencies = [
     "https://github.com/JuliaOpt/COINLapackBuilder/releases/download/v1.5.6-1-static/build_COINLapackBuilder.v1.5.6.jl",
     "https://github.com/JuliaOpt/COINMetisBuilder/releases/download/v1.3.5-1-static/build_COINMetisBuilder.v1.3.5.jl",
     "https://github.com/JuliaOpt/COINMumpsBuilder/releases/download/v1.6.0-1-static-nm/build_COINMumpsBuilder.v1.6.0.jl",
-    "https://github.com/JuliaInterop/libcxxwrap-julia/releases/download/v0.5.1/build_libcxxwrap-julia-1.0.v0.5.1.jl",
-    "https://github.com/JuliaPackaging/JuliaBuilder/releases/download/v1.0.0-2/build_Julia.v1.0.0.jl"
 ]
 
 # Build the tarballs, and possibly a `build.jl` as well.
